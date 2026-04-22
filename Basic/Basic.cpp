@@ -73,12 +73,9 @@ void processLine(std::string line, Program &program, EvalState &state) {
         } else if (cmd == "END") {
             // immediate END does nothing
         } else if (cmd == "GOTO") {
-            Statement *stmt = new GotoStatement(scanner);
-            stmt->execute(state, program);
+            error("SYNTAX ERROR");
         } else if (cmd == "IF") {
-            Statement *stmt = new IfStatement(scanner);
-            stmt->execute(state, program);
-            delete stmt;
+            error("SYNTAX ERROR");
         } else if (cmd == "RUN") {
             runProgram(program, state);
         } else if (cmd == "LIST") {
