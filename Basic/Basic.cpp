@@ -60,15 +60,18 @@ void processLine(std::string line, Program &program, EvalState &state) {
             // ignore
         } else if (cmd == "LET") {
             Statement *stmt = new LetStatement(scanner);
-            stmt->execute(state, program);
+            try { stmt->execute(state, program); }
+            catch (...) { delete stmt; throw; }
             delete stmt;
         } else if (cmd == "PRINT") {
             Statement *stmt = new PrintStatement(scanner);
-            stmt->execute(state, program);
+            try { stmt->execute(state, program); }
+            catch (...) { delete stmt; throw; }
             delete stmt;
         } else if (cmd == "INPUT") {
             Statement *stmt = new InputStatement(scanner);
-            stmt->execute(state, program);
+            try { stmt->execute(state, program); }
+            catch (...) { delete stmt; throw; }
             delete stmt;
         } else if (cmd == "END") {
             // immediate END does nothing
@@ -124,7 +127,8 @@ static void runProgram(Program &program, EvalState &state) {
             error("SYNTAX ERROR");
         }
         if (stmt) {
-            stmt->execute(state, program);
+            try { stmt->execute(state, program); }
+            catch (...) { delete stmt; throw; }
             delete stmt;
         }
         if (program.getCurrentLine() == ln) {
