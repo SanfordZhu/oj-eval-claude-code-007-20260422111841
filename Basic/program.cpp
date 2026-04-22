@@ -9,56 +9,74 @@
  */
 
 #include "program.hpp"
-
-
+#include "Utils/error.hpp"
 
 Program::Program() = default;
 
-Program::~Program() = default;
+Program::~Program() {
+    clear();
+}
 
 void Program::clear() {
-    // Replace this stub with your own code
-    //todo
+    for (auto &p : parsed) delete p.second;
+    parsed.clear();
+    lines.clear();
+    currentLine = -1;
 }
 
 void Program::addSourceLine(int lineNumber, const std::string &line) {
-    // Replace this stub with your own code
-    //todo
+    if (parsed.count(lineNumber)) {
+        delete parsed[lineNumber];
+        parsed.erase(lineNumber);
+    }
+    lines[lineNumber] = line;
 }
 
 void Program::removeSourceLine(int lineNumber) {
-    // Replace this stub with your own code
-    //todo
+    if (parsed.count(lineNumber)) {
+        delete parsed[lineNumber];
+        parsed.erase(lineNumber);
+    }
+    lines.erase(lineNumber);
 }
 
 std::string Program::getSourceLine(int lineNumber) {
-    // Replace this stub with your own code
-    //todo
+    auto it = lines.find(lineNumber);
+    if (it == lines.end()) return "";
+    return it->second;
 }
 
 void Program::setParsedStatement(int lineNumber, Statement *stmt) {
-    // Replace this stub with your own code
-    //todo
+    if (!lines.count(lineNumber)) error("LINE NUMBER ERROR");
+    if (parsed.count(lineNumber)) delete parsed[lineNumber];
+    parsed[lineNumber] = stmt;
 }
 
-//void Program::removeSourceLine(int lineNumber) {
-
 Statement *Program::getParsedStatement(int lineNumber) {
-   // Replace this stub with your own code
-   //todo
+    auto it = parsed.find(lineNumber);
+    if (it == parsed.end()) return nullptr;
+    return it->second;
 }
 
 int Program::getFirstLineNumber() {
-    // Replace this stub with your own code
-    //todo
+    if (lines.empty()) return -1;
+    return lines.begin()->first;
 }
 
 int Program::getNextLineNumber(int lineNumber) {
-    // Replace this stub with your own code
-    //todo
+    auto it = lines.upper_bound(lineNumber);
+    if (it == lines.end()) return -1;
+    return it->first;
 }
 
-//more func to add
-//todo
+bool Program::hasLine(int lineNumber) {
+    return lines.count(lineNumber);
+}
 
+void Program::setCurrentLine(int lineNumber) {
+    currentLine = lineNumber;
+}
 
+int Program::getCurrentLine() const {
+    return currentLine;
+}
